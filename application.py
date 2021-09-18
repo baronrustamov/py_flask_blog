@@ -97,23 +97,23 @@ def login():
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('get_all_posts'))
+        else:
+            # sometimes we just don't want user to know, login or password which one is wrong.
+            # if the user is a hacker.
+            flash("wrong email or password! 請重新輸入。")
+            return redirect(url_for('login'))
 
-    # if request.method == "POST":
-    #     email = request.form.get('email')
-    #     password = request.form.get('password')
-    #
-    #     user = User.query.filter_by(email=email).first()
-    #
-    #     if not user:
-    #         flash("not valid user, 請重新輸入。")
-    #         return redirect(url_for('login'))
-    #     elif not check_password_hash(user.password, password):
-    #         # if password wrong
-    #         flash("密碼錯誤嘍，請重新輸入。")
-    #         return redirect(url_for('login'))
-    #     else:
-    #         login_user(user)
-    #         return redirect(url_for('secrets'))
+        # if not user:
+        #     flash("That email does not exist, please try again.")
+        #     return redirect(url_for('login'))
+        # # Password incorrect
+        # elif not check_password_hash(user.password, password):
+        #     flash('Password incorrect, please try again.')
+        #     return redirect(url_for('login'))
+        # else:
+        #     login_user(user)
+        #     return redirect(url_for('get_all_posts'))
+
     return render_template("login.html", form=form)
 
 
@@ -157,6 +157,7 @@ def add_new_post():
 
 
 @app.route("/edit-post/<int:post_id>")
+@login_required
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
