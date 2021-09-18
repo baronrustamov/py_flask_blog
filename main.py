@@ -51,7 +51,14 @@ def get_all_posts():
 @app.route('/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
+    print('email: ', request.form.get('email'))
+    if User.query.filter_by(email=request.form.get('email') ).first():
+        flash("您已經註冊過了，請登入。")
+        print("您已經註冊過了，請登入。")
+        return redirect(url_for('login'))
+
     if form.validate_on_submit():
+
         hash_salt_password = generate_password_hash(
             form.password.data,
             method='pbkdf2:sha256',
@@ -62,9 +69,12 @@ def register():
             name=form.name.data,
             password=hash_salt_password
         )
+
         db.session.add(new_user)
         db.session.commit()
 
+        # this line will authenticate the user with Flask-login
+        login_user(new_user)
         return redirect(url_for("get_all_posts") )
     return render_template("register.html", form=form)
 
