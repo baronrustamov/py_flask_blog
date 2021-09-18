@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_ckeditor import CKEditor
+from functools import wraps
 from datetime import date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
@@ -58,7 +59,6 @@ def register():
         return redirect(url_for('login'))
 
     if form.validate_on_submit():
-
         hash_salt_password = generate_password_hash(
             form.password.data,
             method='pbkdf2:sha256',
@@ -138,10 +138,23 @@ def about():
 def contact():
     return render_template("contact.html")
 
+def admin_only(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if current_user.id != 1:
+            print('cannot add post! ', func)
+            return abort(403)
+        else:
+            print('admin only: ', func)
+            return func(*args, **kwargs)
+    return wrapper
 
 @application.route("/new-post")
+#mark with the decorator
+@admin_only
 def add_new_post():
     form = CreatePostForm()
+    print('add_new_post form: ', form)
     if form.validate_on_submit():
         new_post = BlogPost(
             title=form.title.data,
@@ -151,14 +164,15 @@ def add_new_post():
             author=current_user,
             date=date.today().strftime("%B %d, %Y")
         )
+        print('new_post: ', new_post)
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("get_all_posts"))
     return render_template("make-post.html", form=form)
 
 
-@application.route("/edit-post/<int:post_id>")
-@login_required
+@application.route("/edit-post/<int:post_id>", methods=["GET", "POST"])
+@admin_only
 def edit_post(post_id):
     post = BlogPost.query.get(post_id)
     edit_form = CreatePostForm(
