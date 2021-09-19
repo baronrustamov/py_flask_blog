@@ -25,32 +25,38 @@ db = SQLAlchemy(application)
 
 
 ##CONFIGURE TABLES
-
-class BlogPost(db.Model):
-    __tablename__ = "blog_posts"
-    id = db.Column(db.Integer, primary_key=True)
-    author = db.Column(db.String(250), nullable=False)
-    title = db.Column(db.String(250), unique=True, nullable=False)
-    subtitle = db.Column(db.String(250), nullable=False)
-    date = db.Column(db.String(250), nullable=False)
-    body = db.Column(db.Text, nullable=False)
-    img_url = db.Column(db.String(250), nullable=False)
-
+# User class HAVE to be defined first.
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String)
     password = db.Column(db.String)
     name = db.Column(db.String)
+
     posts = relationship("BlogPost", back_populates="author")
 
-    # *(* adding Parent relationship
     # ** adding parent relationship, comment_author " refers to the comment_author property in the Comment class.
-    # in Comment class we have, comment_author = relationship("User", back_populates="comments")
+    # in Comment class we have:
+    # author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    # comment_author = relationship("User", back_populates="comments")
     comments = relationship("Comment", back_populates="comment_author")
 
 
-class Comment(db.model):
+class BlogPost(db.Model):
+    __tablename__ = "blog_posts"
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(250), unique=True, nullable=False)
+    subtitle = db.Column(db.String(250), nullable=False)
+    date = db.Column(db.String(250), nullable=False)
+    body = db.Column(db.Text, nullable=False)
+    img_url = db.Column(db.String(250), nullable=False)
+
+    # author = db.Column(db.String(250), nullable=False)
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    author = relationship("User", back_populates="posts")
+
+
+class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String, nullable=False)
@@ -170,9 +176,9 @@ def admin_only(func):
             return func(*args, **kwargs)
     return wrapper
 
-@application.route("/new-post")
+@application.route("/new-post", methods=["GET", "POST"])
 #mark with the decorator
-@admin_only
+#@admin_only
 def add_new_post():
     form = CreatePostForm()
     print('add_new_post form: ', form)
@@ -189,6 +195,7 @@ def add_new_post():
         db.session.add(new_post)
         db.session.commit()
         return redirect(url_for("get_all_posts"))
+    print('before make-post')
     return render_template("make-post.html", form=form)
 
 
