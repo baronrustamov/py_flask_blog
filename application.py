@@ -56,6 +56,10 @@ class BlogPost(db.Model):
     #Create reference to the User object, the "posts" refers to the posts protperty in the User class.
     author = relationship("User", back_populates="posts")
 
+    # relation between Post and Comment:
+    comments = relationship("Comment", back_populates="parent_post")
+
+
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +69,10 @@ class Comment(db.Model):
     # comments, refer to the property in the User class.
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     comment_author = relationship("User", back_populates="comments")
+
+    # relation between Post and Comment:
+    post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
+    parent_post = relationship("BlogPost", back_populates="comments")
 
 db.create_all()
 
@@ -160,10 +168,11 @@ def show_post(post_id):
             return redirect(url_for("login"))
 
         new_comment = Comment(
-            text=form.comment_text.data,
+            text = form.comment_text.data,
             comment_author = current_user,
             parent_post = requested_post
         )
+        print('new comment: ', new_comment)
         db.session.add(new_comment)
         db.session.commit()
 
