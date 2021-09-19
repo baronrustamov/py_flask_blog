@@ -29,7 +29,7 @@ db = SQLAlchemy(application)
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String)
+    email = db.Column(db.String, unique=True)
     password = db.Column(db.String)
     name = db.Column(db.String)
 
@@ -51,10 +51,10 @@ class BlogPost(db.Model):
     body = db.Column(db.Text, nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
 
-    # author = db.Column(db.String(250), nullable=False)
+    #Create Foreign Key, "users.id" the users refers to the tablename of User.
     author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    #Create reference to the User object, the "posts" refers to the posts protperty in the User class.
     author = relationship("User", back_populates="posts")
-
 
 class Comment(db.Model):
     __tablename__ = "comments"
@@ -149,11 +149,25 @@ def logout():
     return redirect(url_for('get_all_posts'))
 
 
-@application.route("/post/<int:post_id>")
+@application.route("/post/<int:post_id>", methods=["GET", "POST"])
 def show_post(post_id):
     form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
-    return render_template("post.html", post=requested_post, form=form)
+
+    if form.validate_on_submit():
+        if not current_user.is_authenticated:
+            flash("need to login or register to comment")
+            return redirect(url_for("login"))
+
+        new_comment = Comment(
+            text=form.comment_text.data,
+            comment_author = current_user,
+            parent_post = requested_post
+        )
+        db.session.add(new_comment)
+        db.session.commit()
+
+    return render_template("post.html", post=requested_post, form=form, current_user=current_user)
 
 
 @application.route("/about")
