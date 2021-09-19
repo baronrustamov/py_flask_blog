@@ -7,12 +7,15 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
-from forms import CreatePostForm, RegisterForm, LoginForm
+from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 
+from flask_ckeditor import CKEditor
+
 application = Flask(__name__)
-application.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 ckeditor = CKEditor(application)
+
+application.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap(application)
 
 ##CONNECT TO DB
@@ -39,6 +42,23 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String)
     password = db.Column(db.String)
     name = db.Column(db.String)
+    posts = relationship("BlogPost", back_populates="author")
+
+    # *(* adding Parent relationship
+    # ** adding parent relationship, comment_author " refers to the comment_author property in the Comment class.
+    # in Comment class we have, comment_author = relationship("User", back_populates="comments")
+    comments = relationship("Comment", back_populates="comment_author")
+
+
+class Comment(db.model):
+    __tablename__ = "comments"
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String, nullable=False)
+    # adding child relationship
+    # users.id, the users refer to the tablename of the user class.
+    # comments, refer to the property in the User class.
+    author_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    comment_author = relationship("User", back_populates="comments")
 
 db.create_all()
 
@@ -125,8 +145,9 @@ def logout():
 
 @application.route("/post/<int:post_id>")
 def show_post(post_id):
+    form = CommentForm()
     requested_post = BlogPost.query.get(post_id)
-    return render_template("post.html", post=requested_post)
+    return render_template("post.html", post=requested_post, form=form)
 
 
 @application.route("/about")
