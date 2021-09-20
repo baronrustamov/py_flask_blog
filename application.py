@@ -9,7 +9,11 @@ from models.usermodel import db, BlogPost, Comment, User
 from blueprints.user_blueprint import user_blueprint
 from blueprints.post_blueprint import post_blueprint
 
+from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+
 def create_app(test_config="testing"):
+
     mysql_url = ""
     print('test_config: ', test_config)
     if test_config is "development":
@@ -38,7 +42,6 @@ def create_app(test_config="testing"):
             + "/" + db_name
         print('mysql_url: ', mysql_url)
 
-        pass
 
     application = Flask(__name__)
     application.register_blueprint(user_blueprint)
@@ -49,7 +52,13 @@ def create_app(test_config="testing"):
     application.config['SQLALCHEMY_DATABASE_URI'] = mysql_url
     # application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
     application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    engine = create_engine(mysql_url)
+    if not database_exists(engine.url):
+        create_database(engine.url)
+
     db.init_app(application)
+    # print('db: ', db.Model)
     # https://stackoverflow.com/a/19438054/720276
     with application.app_context():
         # Extensions like Flask-SQLAlchemy now know what the "current" app
@@ -67,8 +76,6 @@ gravatar = Gravatar(application, size=100, rating='g', default='retro',
                     force_default=False, force_lower=False, use_ssl=False, base_url=None)
 
 
-db.init_app(application)
-# print('db: ', db.Model)
 
 login_manager = LoginManager()
 login_manager.init_app(application)
