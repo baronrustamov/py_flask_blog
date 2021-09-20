@@ -12,19 +12,21 @@ def create_app(test_config=None):
     application = Flask(__name__)
     application.register_blueprint(user_blueprint)
     application.register_blueprint(post_blueprint)
+    application.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+
     db.init_app(application)
     return application
 
 
 application = create_app()
 
+Bootstrap(application)
+
 ckeditor = CKEditor(application)
 gravatar = Gravatar(application, size=100, rating='g', default='retro',
                     force_default=False, force_lower=False, use_ssl=False, base_url=None)
 
 
-application.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
-Bootstrap(application)
 
 import os
 db_user = os.environ["DB_USER"]
