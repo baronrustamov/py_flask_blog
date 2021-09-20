@@ -84,36 +84,36 @@ class mysqldb_shell():
       # else:
       #     return init_unix_connection_engine(db_config)
 
-  def getDances(self):
-      dances = []
-      db = self.db or self.init_connection_engine()
-      with db.connect() as conn:
-          dances = conn.execute(
-              """CREATE DATABASE IF NOT EXISTS pachinko;"""
-          )
-          dances = conn.execute(
-              """USE pachinko;"""
-          )
-          dances = conn.execute(
-              """DROP TABLE dance;"""
-          )
-          dances = conn.execute(
-              "CREATE TABLE IF NOT EXISTS dance "
-              "(dance_id SERIAL NOT NULL, "
-              "dance_style CHAR(30) NOT NULL, PRIMARY KEY (dance_id) );"
-          )
-          dances = conn.execute(
-              "INSERT INTO dance (dance_id, dance_style) VALUES (1, 'swing');"
-          )
-          dances = conn.execute(
-              "INSERT INTO dance (dance_id, dance_style) VALUES (2, 'salsa');"
-          )
-          dances = conn.execute(
-              """SELECT * FROM dance;"""
-          )
+#   def getDances(self):
+#       dances = []
+#       db = self.db or self.init_connection_engine()
+#       with db.connect() as conn:
+#           dances = conn.execute(
+#               """CREATE DATABASE IF NOT EXISTS pachinko;"""
+#           )
+#           dances = conn.execute(
+#               """USE pachinko;"""
+#           )
+#           dances = conn.execute(
+#               """DROP TABLE dance;"""
+#           )
+#           dances = conn.execute(
+#               "CREATE TABLE IF NOT EXISTS dance "
+#               "(dance_id SERIAL NOT NULL, "
+#               "dance_style CHAR(30) NOT NULL, PRIMARY KEY (dance_id) );"
+#           )
+#           dances = conn.execute(
+#               "INSERT INTO dance (dance_id, dance_style) VALUES (1, 'swing');"
+#           )
+#           dances = conn.execute(
+#               "INSERT INTO dance (dance_id, dance_style) VALUES (2, 'salsa');"
+#           )
+#           dances = conn.execute(
+#               """SELECT * FROM dance;"""
+#           )
 
-      # Convert it into a list for readability
-      dances = [list(l) for l in dances]
-      print('get Dances from mysql DB: ', dances)
-      return dances
+#       # Convert it into a list for readability
+#       dances = [list(l) for l in dances]
+#       print('get Dances from mysql DB: ', dances)
+#       return dances
 

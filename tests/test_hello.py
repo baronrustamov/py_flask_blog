@@ -8,8 +8,3 @@ def test_hello():
     assert response.status_code == 200
 
 
-# def test_hello():
-#     response = application.test_client().get('/')
-
-#     assert response.status_code == 200
-
