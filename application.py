@@ -5,12 +5,18 @@ from flask_gravatar import Gravatar
 from flask_ckeditor import CKEditor
 from models.usermodel import db, BlogPost, Comment, User
 
-application = Flask(__name__)
-
 from blueprints.user_blueprint import user_blueprint
 from blueprints.post_blueprint import post_blueprint
-application.register_blueprint(user_blueprint)
-application.register_blueprint(post_blueprint)
+
+def create_app(test_config=None):
+    application = Flask(__name__)
+    application.register_blueprint(user_blueprint)
+    application.register_blueprint(post_blueprint)
+    db.init_app(application)
+    return application
+
+
+application = create_app()
 
 ckeditor = CKEditor(application)
 gravatar = Gravatar(application, size=100, rating='g', default='retro',
@@ -63,6 +69,15 @@ def contact():
     return render_template("contact.html")
 
 
+@application.cli.command()
+def test():
+    import unittest
+    import sys
+
+    tests = unittest.TestLoader().discover("tests")
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.errors or result.failures:
+        sys.exit(1)
 
 if __name__ == "__main__":
     application.debug = True

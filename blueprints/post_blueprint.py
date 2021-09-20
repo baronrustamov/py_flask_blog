@@ -1,3 +1,4 @@
+from datetime import date
 from functools import wraps
 from flask import Blueprint
 from flask import render_template, redirect, url_for, flash, abort
@@ -30,8 +31,6 @@ def admin_only(func):
     return wrapper
 
 @post_blueprint.route("/new-post", methods=["GET", "POST"])
-#mark with the decorator
-#@admin_only
 def add_new_post():
     form = CreatePostForm()
     print('add_new_post form: ', form)
@@ -47,7 +46,7 @@ def add_new_post():
         print('new_post: ', new_post)
         db.session.add(new_post)
         db.session.commit()
-        return redirect(url_for("get_all_posts"))
+        return redirect(url_for("post_blueprint.get_all_posts"))
     print('before make-post')
     return render_template("make-post.html", form=form)
 
@@ -80,7 +79,7 @@ def delete_post(post_id):
     post_to_delete = BlogPost.query.get(post_id)
     db.session.delete(post_to_delete)
     db.session.commit()
-    return redirect(url_for('get_all_posts'))
+    return redirect(url_for('post_blueprint.get_all_posts'))
 
 
 @post_blueprint.route("/post/<int:post_id>", methods=["GET", "POST"])
