@@ -1,5 +1,4 @@
 # https://realpython.com/flask-blueprint/
-
 from flask import Blueprint
 from flask import render_template, request, redirect, url_for, flash
 from models.forms import RegisterForm, LoginForm
