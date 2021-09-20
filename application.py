@@ -28,9 +28,12 @@ application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 db.init_app(application)
-print('db: ', db.Model)
-# db.create_all()
-
+# print('db: ', db.Model)
+# https://stackoverflow.com/a/19438054/720276
+with application.app_context():
+    # Extensions like Flask-SQLAlchemy now know what the "current" app
+    # is while within this block. Therefore, you can now run........
+    db.create_all()
 
 @application.route('/')
 def get_all_posts():
