@@ -12,7 +12,7 @@ from blueprints.post_blueprint import post_blueprint
 from sqlalchemy import create_engine
 from sqlalchemy_utils import database_exists, create_database
 
-def create_app(test_config="testing"):
+def create_app(test_config="development"):
 
     mysql_url = ""
     print('test_config: ', test_config)
