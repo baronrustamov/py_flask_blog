@@ -3,15 +3,18 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
 
 db = SQLAlchemy()
+# from models.mysqldb import mysqldb_shell
+# mysqldb_shell().getDances()
+# db = mysqldb_shell().db
 
 ##CONFIGURE TABLES
 # User class HAVE to be defined first.
 class User(UserMixin, db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
-    name = db.Column(db.String)
+    email = db.Column(db.String(100), unique=True)
+    password = db.Column(db.String(100))
+    name = db.Column(db.String(100))
 
     posts = relationship("BlogPost", back_populates="author")
 
@@ -43,7 +46,7 @@ class BlogPost(db.Model):
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.String, nullable=False)
+    text = db.Column(db.String(1000), nullable=False)
     # adding child relationship
     # users.id, the users refer to the tablename of the user class.
     # comments, refer to the property in the User class.

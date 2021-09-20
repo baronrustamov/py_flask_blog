@@ -22,8 +22,23 @@ gravatar = Gravatar(application, size=100, rating='g', default='retro',
 application.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
 Bootstrap(application)
 
+import os
+db_user = os.environ["DB_USER"]
+db_pass = os.environ["DB_PASS"]
+db_name = os.environ["DB_NAME"]
+db_host = os.environ["DB_HOST"]
+
+# Extract host and port from db_host
+host_args = db_host.split(":")
+db_hostname, db_port = host_args[0], int(host_args[1])
+mysql_url = "mysql+pymysql://" + db_user + ":" + db_pass + "@" + db_host \
+    + "/" + db_name
+print('mysql_url: ', mysql_url)
+
 ##CONNECT TO DB
-application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+
+application.config['SQLALCHEMY_DATABASE_URI'] = mysql_url
+# application.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 application.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
