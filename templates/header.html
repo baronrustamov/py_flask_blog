@@ -38,16 +38,16 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('post_blueprint.get_all_posts') }}">Home</a>
           </li>
-          {% if not current_user.is_authenticated: %}
+          {% if current_user and current_user.is_authenticated: %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('user_blueprint.logout') }}">Log Out</a>
+          </li>
+          {% else: %}
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('user_blueprint.login') }}">Login</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('user_blueprint.register') }}">Register</a>
-          </li>
-          {% else: %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('user_blueprint.logout') }}">Log Out</a>
           </li>
           {% endif %}
 

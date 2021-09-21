@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform linux -- Python 3.6.13, pytest-6.2.5, py-1.10.0, pluggy-1.0.0
+rootdir: /home/pac/code/portfolio/py_flask_blog
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_______________________ ERROR collecting tests/test_a.py _______________________
+tests/test_a.py:2: in <module>
+    from tests.base import BaseTest
+tests/base.py:1: in <module>
+    from application import application, db
+application.py:74: in <module>
+    application = create_app()
+application.py:49: in create_app
+    application.register_blueprint(post_blueprint)
+../../../.local/lib/python3.6/site-packages/flask/app.py:98: in wrapper_func
+    return f(self, *args, **kwargs)
+../../../.local/lib/python3.6/site-packages/flask/app.py:1168: in register_blueprint
+    blueprint.register(self, options, first_registration)
+../../../.local/lib/python3.6/site-packages/flask/blueprints.py:256: in register
+    deferred(state)
+../../../.local/lib/python3.6/site-packages/flask/blueprints.py:294: in <lambda>
+    self.record(lambda s: s.add_url_rule(rule, endpoint, view_func, **options))
+../../../.local/lib/python3.6/site-packages/flask/blueprints.py:86: in add_url_rule
+    **options
+../../../.local/lib/python3.6/site-packages/flask/app.py:98: in wrapper_func
+    return f(self, *args, **kwargs)
+../../../.local/lib/python3.6/site-packages/flask/app.py:1278: in add_url_rule
+    self.url_map.add(rule)
+../../../.local/lib/python3.6/site-packages/werkzeug/routing.py:1482: in add
+    rule.bind(self)
+../../../.local/lib/python3.6/site-packages/werkzeug/routing.py:767: in bind
+    self.compile()
+../../../.local/lib/python3.6/site-packages/werkzeug/routing.py:840: in compile
+    self._build = self._compile_builder(False).__get__(self, None)
+../../../.local/lib/python3.6/site-packages/werkzeug/routing.py:942: in _compile_builder
+    (False, url_quote(to_bytes(data, self.map.charset), safe="/:|+"))
+../../../.local/lib/python3.6/site-packages/werkzeug/urls.py:545: in url_quote
+    if isinstance(unsafe, text_type):
+E   KeyboardInterrupt
+------------------------------- Captured stdout --------------------------------
+test_config:  development
+mysql_url:  mysql+pymysql://admin:testtest@aa6m2tm09e3c8b.chnynkjr0d0u.ap-southeast-1.rds.amazonaws.com:3306/pachinko
+=========================== short test summary info ============================
+ERROR tests/test_a.py - KeyboardInterrupt
+========================= 3 warnings, 1 error in 1.33s =========================
