@@ -18,14 +18,14 @@ class TestHello(unittest.TestCase):
     application.config['SERVER_NAME'] = '127.0.0.1'
     application.config['WTF_CSRF_ENABLED'] = False
 
-  @application.route('/about')
-  def about():
-    return abort(403)
+  # @application.route('/about')
+  # def about():
+  #   return abort(403)
 
   def test_hello(self):
     with application.app_context():
       response = application.test_client().get(url_for('about') )
-      assert response.status_code == 403
+      assert response.status_code == 200
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,10 +8,10 @@ from models.usermodel import db, BlogPost, Comment
 meta_blueprint = Blueprint('meta_blueprint', __name__)
 
 
-@meta_blueprint.route("/about")
-def about():
-    return render_template("about.html")
+# @meta_blueprint.route("/about")
+# def about():
+#     return render_template("about.html")
 
-@meta_blueprint.route("/contact")
-def contact():
-    return render_template("contact.html")
+# @meta_blueprint.route("/contact")
+# def contact():
+#     return render_template("contact.html")

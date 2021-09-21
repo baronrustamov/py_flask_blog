@@ -84,6 +84,16 @@ login_manager.init_app(application)
 def load_user(user_id):
     return User.query.get(user_id)
 
+@application.route("/about")
+def about():
+    return render_template("about.html")
+
+
+@application.route("/contact")
+def contact():
+    return render_template("contact.html")
+
+
 @application.cli.command()
 def test():
     import unittest
