@@ -21,7 +21,7 @@ def logout():
 @user_blueprint.route('/register', methods=["GET", "POST"])
 def register():
     form = RegisterForm()
-    print('email: ', request.form.get('email'))
+    print('def register email: ', request.form.get('email'))
     if User.query.filter_by(email=request.form.get('email') ).first():
         flash("您已經註冊過了，請登入。")
         print("您已經註冊過了，請登入。")

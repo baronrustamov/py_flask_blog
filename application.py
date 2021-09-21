@@ -65,18 +65,17 @@ def create_app(test_config="development"):
         # Extensions like Flask-SQLAlchemy now know what the "current" app
         # is while within this block. Therefore, you can now run........
         db.create_all()
+
+    Bootstrap(application)
+
     return application
 
 
 application = create_app()
 
-Bootstrap(application)
-
 ckeditor = CKEditor(application)
 gravatar = Gravatar(application, size=100, rating='g', default='retro',
                     force_default=False, force_lower=False, use_ssl=False, base_url=None)
-
-
 
 login_manager = LoginManager()
 login_manager.init_app(application)

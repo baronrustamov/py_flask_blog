@@ -1,9 +1,12 @@
 # https://www.maxlist.xyz/2020/08/17/flask-unittest/
 import unittest
+import pytest
 from flask import url_for
 from flask_testing import TestCase
 from application import create_app, db, application
-import json
+from flask_bootstrap import Bootstrap
+from flask_login import login_user, LoginManager, current_user, logout_user
+from models.usermodel import db, BlogPost, Comment, User
 import os
 
 class SettingBase(TestCase):
@@ -15,7 +18,7 @@ class SettingBase(TestCase):
         db_user = "admin"
         db_pass = os.environ["DB_PASS"]
         db_name = "test_db"
-        db_host = "localhost:3306"
+        db_host = os.environ["DB_HOST"]
 
         # Extract host and port from db_host
         host_args = db_host.split(":")
@@ -32,7 +35,7 @@ class SettingBase(TestCase):
         with application.app_context():
             # Extensions like Flask-SQLAlchemy now know what the "current" app
             # is while within this block. Therefore, you can now run........
-#            db.drop_all()
+            db.engine.execute("DROP DATABASE IF EXISTS test_db ;")
             db.create_all()
 
         application.config['TESTING'] = True
@@ -45,7 +48,9 @@ class SettingBase(TestCase):
         self.password = "666666"
         self.name = "pac"
         print('test setUp: ', self.email, self.password, self.name)
-        
+
+        login_manager = LoginManager()
+        login_manager.init_app(application)
 
       # 在結束測試時會被執行
     def tearDown(self):
@@ -55,20 +60,32 @@ class SettingBase(TestCase):
       # signup 是測試時很常會被用到的功能，所以寫成函式，可以重複利用
     def signup(self):
         print('test setUp: ', self.email, self.password, self.name)
+
+        # login_manager = LoginManager()
+        # login_manager.init_app(application)
+
+        data = {"email": self.email,
+            "password": self.password,
+            "name": self.name}
         response = self.client.post(
             url_for('user_blueprint.register'),
-            follow_redirects=True,
-            json={"email": self.email,
-                "password": self.password,
-                "name": self.name})
+            follow_redirects=True, data=data
+            )
+
+        # response = self.client.post(
+        #     url_for('user_blueprint.register'),
+        #     follow_redirects=True,
+        #     json={"email": self.email,
+        #         "password": self.password,
+        #         "name": self.name})
         return response
 # 這邊繼承剛剛的寫的 SettingBase class，接下來會把測試都寫在這裡
 class CheckUserAndLogin(SettingBase):
     def test_pass(self):
         pass
-    # def test_signup(self):
-    #     response = self.signup()
-    #     self.assertEqual(response.status_code, 200)
+    def test_signup(self):
+        response = self.signup()
+        self.assertEqual(response.status_code, 200)
 
     # def test_signup_400(self):
     #     # 測試密碼少於六位數
