@@ -1,9 +1,9 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash, abort
 from flask_bootstrap import Bootstrap
 from flask_login import login_user, LoginManager, current_user, logout_user
 from flask_gravatar import Gravatar
 from flask_ckeditor import CKEditor
-import os
 from models.usermodel import db, BlogPost, Comment, User
 
 from blueprints.user_blueprint import user_blueprint
@@ -17,6 +17,7 @@ def create_app(test_config="development"):
     mysql_url = ""
     print('test_config: ', test_config)
     if test_config is "development":
+        import os
         db_user = os.environ["DB_USER"]
         db_pass = os.environ["DB_PASS"]
         db_name = os.environ["DB_NAME"]

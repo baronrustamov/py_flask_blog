@@ -4,6 +4,7 @@ from flask import url_for
 from flask_testing import TestCase
 from application import create_app, db, application
 import json
+import os
 
 class SettingBase(TestCase):
     def create_app(self):
@@ -11,8 +12,6 @@ class SettingBase(TestCase):
 
       # 在運行測試之前會先被執行
     def setUp(self):
-
-        import os
         db_user = "admin"
         db_pass = os.environ["DB_PASS"]
         db_name = "test_db"
@@ -50,8 +49,6 @@ class SettingBase(TestCase):
 
       # 在結束測試時會被執行
     def tearDown(self):
-        pass
-
         db.session.remove()
         db.drop_all()
 
