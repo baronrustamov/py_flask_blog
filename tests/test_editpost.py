@@ -74,6 +74,8 @@
 
 #         with application.app_context():
 #           with self.client:
+#             # response = application.test_client().get(url_for('register'),
+#             #     follow_redirects=True, data=data)
 #             response = self.client.post(
 #               url_for('user_blueprint.register'),
 #               follow_redirects=True, data=data

@@ -1,24 +1,46 @@
+from flask import Flask, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
 from application import application, db
 import unittest
 
 class BaseTest(unittest.TestCase):
   def setUp(self):
-
-
-    from flask import Flask
-    from flask_sqlalchemy import SQLAlchemy
-    from flask_login import LoginManager
-
-    app = Flask(__name__)
-    # app.config[u'DEBUG'] = settings.debug
-    db = SQLAlchemy(app)
-    login_manager = LoginManager()
-    login_manager.init_app(app)
-
-    application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
-
+    application = Flask(__name__)
     application.config['TESTING'] = True
+    application.config['SERVER_NAME'] = '127.0.0.1'
+    application.config['WTF_CSRF_ENABLED'] = False
+    application.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///:memory:"
+    # app.config[u'DEBUG'] = settings.debug
+    db = SQLAlchemy(application)
+    login_manager = LoginManager()
+    login_manager.init_app(application)
     # application.config['LOGIN_DISABLED'] = False
-    #application.login_manager._login_disabled = False #doesn't help either
-    self.application = application.test_client()
+    # self.application = application.test_client()
     db.create_all()
+
+  def signup(self):
+    # data = {"email": self.email,
+    #     "password": self.password,
+    #     "name": self.name}
+    data = {"email": "test@a.com",
+        "password": "666666",
+        "name": "pac"}
+    print("data: ", data)
+    print("data: ", data)
+    print("data: ", data)
+    print("application.app_context(): ", application.app_context() )
+    with application.app_context():
+      response = application.test_client().get(url_for('user_blueprint.register'),
+          follow_redirects=True, data=data)
+      assert response.status_code == 200
+      print("res: ", response.status_code )
+      # wrong: self.client.post(
+      # with self.client:
+      #   response = self.client.post(
+      #     url_for('user_blueprint.register'),
+      #     follow_redirects=True, data=data
+      #   )
+
+
