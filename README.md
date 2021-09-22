@@ -6,7 +6,8 @@ This is a code-along project with 100 days of python from Dr. Angela Yu.
 ## Tech stack: 
 Python3, Flask, MySQL, AWS EB, RDS
 
-## Demo site: https://backend.yesido.me/
+## Demo site: 
+https://backend.yesido.me/
 
 ## Circle CI: 
 * master branch:
