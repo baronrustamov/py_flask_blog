@@ -1,7 +1,7 @@
 # A blog site built with Flask, MySQL on AWS EB + RDS.
 
 ## Summary: 
-This is a code-along project with 100 days of python from Dr. Angela Yu.
+This is a code-along project with "100 days of python course" on udemy.
 
 ## Tech stack: 
 Python3, Flask, MySQL, AWS EB, RDS
