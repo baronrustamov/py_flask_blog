@@ -7,6 +7,10 @@ import unittest
 
 class BaseTest(unittest.TestCase):
   def setUp(self):
+    self.email = "test@a.com"
+    self.password = "P654321."
+    self.name = "pac"
+
     application = Flask(__name__)
     application.config['TESTING'] = True
     application.config['SERVER_NAME'] = '127.0.0.1'
@@ -20,15 +24,18 @@ class BaseTest(unittest.TestCase):
     # self.application = application.test_client()
     db.create_all()
 
+  def tearDown(self):
+    db.session.remove()
+    # db.drop_all()
+
+
   def signup(self):
-    # data = {"email": self.email,
-    #     "password": self.password,
-    #     "name": self.name}
-    data = {"email": "test@a.com",
-        "password": "666666",
-        "name": "pac"}
-    print("data: ", data)
-    print("data: ", data)
+    data = {"email": self.email,
+        "password": self.password,
+        "name": self.name}
+    # data = {"email": "test@a.com",
+    #     "password": "666666",
+    #     "name": "pac"}
     print("data: ", data)
     print("application.app_context(): ", application.app_context() )
     with application.app_context():
