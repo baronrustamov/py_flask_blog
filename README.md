@@ -1,7 +1,7 @@
 # A blog site built with Flask, MySQL on AWS EB + RDS.
 
 ## Summary: 
-This is a code-along project with "100 days of python course" on udemy.
+This is a code-along project with "100 days of python course" on udemy. I added the MySQL on AWS RDS part and pytest unit-testing and circleci CI/CD.
 
 ## Tech stack: 
 Python3, Flask, MySQL, AWS EB, RDS
